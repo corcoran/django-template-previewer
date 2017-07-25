@@ -12,8 +12,8 @@ setup(name="DjangoTemplatePreviewer",
       long_description="""
 
 """,
-      author="Ashley Camba (forker)",
-      author_email="stuff4ash@gmail.com",
+      author="Jeff Corcoran (forker)",
+      author_email="jcorcoran+github@gmail.com",
       packages=find_packages(),
       install_requires=['pyyaml','setuptools_git >= 0.3',],
       )
