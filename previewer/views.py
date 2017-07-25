@@ -1,11 +1,14 @@
 # Create your views here.
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 from django.conf import settings
 import yaml
 
 special = ['_extends']
 
-class FixError(Exception): pass
+
+class FixError(Exception):
+    pass
+
 
 def get_fixes(the_yaml, template):
     """
@@ -43,16 +46,11 @@ def get_fixes(the_yaml, template):
     return context
 
 
-def template_with_fix(request, template, extra_context=None, mimetype=None, **kwargs):
-    """
-    Works like django.views.generic.simple.direct_to_template except
-    that the context is updated by the data found in the file whose
-    name is stored in the setting TEMPLATE_FIX. If there's no such
-    setting, the context is left alone.
-    """
-    if extra_context is None:
-        extra_context = {}
-    fixed = extra_context.update(get_fixes(open(settings.TEMPLATE_FIX), template))
+class MockDataTemplateView(TemplateView):
+    def get_template_names(self):
+        return self.kwargs.get('template_name', self.template_name)
 
-    return direct_to_template(request, template, extra_context, mimetype, **kwargs)
-
+    def get_context_data(self, **kwargs):
+        context = super(MockDataTemplateView, self).get_context_data(**kwargs)
+        context.update(get_fixes(open(settings.TEMPLATE_FIX), self.get_template_names()))
+        return context
