@@ -60,22 +60,36 @@ Url configuration
 
 Include ``previewer.urls`` under a sensible prefix in the urls.py file of
 your project (I use the prefix templates, so my ``urls.py`` looks like
-
 ::
 
-    urlpatterns = patterns('',
-                       ...
-                       ('templates', include('template_viewer.previewer.urls')),
-                       ...
-                       )
+    urlpatterns = [
+        ...
+        url('^templates', include('previewer.urls')),
+        ...
+    ]
 
-).
+
+URLs can also be customized using the included MockDataTemplateView
+::
+
+    url('^$', MockDataTemplateView.as_view(template_name="index.html")),
+
+Context can be passed through URLs using Django URL patterns
+::
+
+    url('^(?P<slug>.+)$', MockDataTemplateView.as_view(template_name="index.html")),
+
+Context can also be added with a special "extra_context" parameter
+::
+
+    url('^(?P<slug>.+)/recent$', MockDataTemplateView.as_view(template_name="index.html",
+            extra_context={'filter': {'type': 'recent'}})),
 
 ------------
 Template fix
 ------------
 
-A template fix is simply a YAML file which contains a mapping between
+A template fix is simply a YAML/JSON file which contains a mapping between
 template files and the context we want to pass them. For example:::
 
     404.html:
